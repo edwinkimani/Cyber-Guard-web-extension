@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="../pages/css/ssl.css">
+  <title>ssl</title>
+  <style>
+    html,
+    body {
+      width: 400px;
+      height: 500px;
+      margin: 0;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      padding: 0px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: #888 #f1f1f1;
+    }
+
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    .malicious {
+      color: red;
+      font-weight: bold;
+    }
+
+    .safe {
+      color: green;
+      font-weight: bold;
+    }
+
+    .suspicious {
+      color: orange;
+      font-weight: bold;
+    }
+
+    .neutral {
+      color: gray;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <nav style="background-color: #002D62;height: 70px;" class="navbar sticky-top">
+      <div class="container-fluid">
+        <a style="color: #5DCAD1;" class="navbar-brand" href="#">
+          <img src="../icons/apple-touch-icon.png" width="50" height="50" alt="">
+          <b>Cyber Guard </b>
+        </a>
+        <div>
+          <a href="./notification.html"><img style="cursor: pointer;" src="../icons/bell.png" alt="" width="25"
+              height="25"></a>
+          <img style="cursor: pointer;" src="../icons/settings (1).png" alt="" width="25" height="25">
+        </div>
+      </div>
+    </nav>
+    <!-- first div -->
+    <div class="row">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-2">
+            <img src="../icons/virus.png" alt="" width="150" height="125">
+          </div>
+          <div class="col-9 d-flex justify-content-between">
+            <h1 class="m-3 mt-4">VIRUS</h1>
+            <a class="mt-4" href="./Dashbord.html"><b>BACK</b></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of first div -->
+
+    <div class="row mt-3">
+      <div class="col-12 d-flex justify-content-center align-content-center">
+        <div class="container">
+          <div class="row">
+            <div style="font-weight: 900;font-size: 20px;" id="ssl_domain" class="text-center mb-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Third Section: Block Ads -->
+    <div class="row rounded-3 mt-4 m-3" style="background-color: #002C61; min-height: 40px;">
+      <div class="col-12 d-flex justify-content-center align-items-center p-2">
+        <div class="text-center">
+          <h3 style="color: #00F5FF;">Virus Detected</h3>
+          <h3 style="color: #00F5FF;">
+            <span id="adCount" style="color: #ED524E;">0</span> in total
+          </h3>
+        </div>
+      </div>
+    </div>
+    <!-- Enable Block Ad Blocker -->
+
+    <!-- second div -->
+    <div class="row p-2 m-1 mt-4">
+      <h4><b>Real-Time Virus Scanner</b></h4>
+      <p>Click the button below to scan the current website for potential viruses and threats. This helps ensure the
+        site is safe for you and your family to browse.</p>
+      <div class="col-12 p-1" style="background-color: #D4EDDA; border-radius: 10px; height: 70px;">
+        <div class="row">
+          <div class="col-3">
+            <img src="../icons/security.png" alt="" width="60" height="60">
+          </div>
+          <div class="col-4">
+            <p class="mt-3"><b>Scan url</b></p>
+          </div>
+          <div class="col-5 p-1 mt-2 d-flex align-items-start justify-content-start align-content-start">
+            <div class="form-check form-switch d-flex align-items-start justify-content-start align-content-start">
+              <button style="background-color: #002C61;color: #00F5FF;border: none;" id="scanURL"
+                class="btn btn-primary">scan URL</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of second div -->
+
+    <div class="row p-3">
+      <h4><b>Scan Results</b></h4>
+      <!-- ENABLE Keyword Filtering -->
+      <div class="row p-2 m-1">
+        <div style="background-color: #D4EDDA;border-radius: 10px;min-height: 70px;" class="col-12 p-1">
+          <div class="row">
+            <div id="scanResult">
+              <p><strong>URL:</strong> <span id="url">-</span></p>
+              <p><strong>Malicious:</strong> <span id="malicious">-</span></p>
+              <p><strong>Harmless:</strong> <span id="harmless">-</span></p>
+              <p><strong>Suspicious:</strong> <span id="suspicious">-</span></p>
+              <p><strong>Undetected:</strong> <span id="undetected">-</span></p>
+              <p id="finalMessage" class="neutral">Scan result will appear here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- end of Keyword Filtering div -->
+
+    </div>
+
+  </div>
+  <footer class="mt-4">
+    <div style="background-color: #002D62;height: 40px;color: #00F5FF;" class="container">
+      <div class="row mt-2">
+        <div class="col-4">
+          <p style="text-align: end;"><b>Support</b></p>
+        </div>
+        <div class="col-4">
+          <p><a href="#"><b>Privacy Policy</b></a></p>
+        </div>
+        <div class="col-4">
+          <p style="text-align: left;"><b>Version: 1.0</b></p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../src/virus.js"></script>
+</body>
+
+</html>
