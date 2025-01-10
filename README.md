@@ -21,9 +21,9 @@ Cyber Guard is a browser extension designed to enhance user privacy and safety w
 
 ## Screenshots
 
-![App Screenshot](readme-img/cyber1.png)
-
 ![App Screenshot](readme-img/cyber2.png)
+
+![App Screenshot](readme-img/cyber1.png)
 
 ![App Screenshot](readme-img/cyber3.png)
 
