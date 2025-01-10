@@ -5,54 +5,56 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-function updateSSLInfo(sslInfo) {
-  console.log("Received SSL Info:", sslInfo);  // Log to check the SSL info structure
 
+function updateSSLInfo(sslInfo) {
   const sslInfoDiv = document.getElementById("ssl_info");
   const spinner = sslInfoDiv.querySelector(".spinner-border");
 
   if (spinner) {
-    spinner.style.display = "none"; // Hide spinner after data is fetched
+      spinner.style.display = "none";
   }
 
-  // Check if sslInfo is properly structured
   if (sslInfo) {
-    const { isValid, issuedTo, issuedBy, validityPeriod } = sslInfo;  // Directly destructure the response
+      const { isValid, issuedTo, issuedBy, validityPeriod, error } = sslInfo;
 
-    let status = "Invalid";
-    let statusClass = "text-danger";
-    let validPeriod = "N/A - N/A";
+      let status = "Invalid Do not use the site";
+      let statusClass = "text-danger";
+      let validPeriod = "N/A - N/A";
 
-    // If validityPeriod is available, format it
-    if (validityPeriod) {
-      validPeriod = `${validityPeriod.validFrom} - ${validityPeriod.validTo}`;
-    }
+      if (validityPeriod) {
+          validPeriod = `${validityPeriod.validFrom} - ${validityPeriod.validTo}`;
+      }
 
-    // Set status and class based on isValid
-    if (isValid) {
-      status = "Valid";
-      statusClass = "text-success";
-    }
+      if (isValid) {
+          status = "Valid";
+          statusClass = "text-success";
+      }
 
-    // Update the DOM elements with SSL details
-    document.getElementById("issued_to").textContent = issuedTo || "N/A";
-    document.getElementById("issued_by").textContent = issuedBy || "N/A";
-    document.getElementById("valid_period").textContent = validPeriod;
-    document.getElementById("is_valid").textContent = status;
+      document.getElementById("issued_to").textContent = issuedTo || "N/A";
+      document.getElementById("issued_by").textContent = issuedBy || "N/A";
+      document.getElementById("valid_period").textContent = validPeriod;
+      document.getElementById("is_valid").textContent = status;
 
-    // Update the status color based on SSL validity
-    const statusElement = document.getElementById("is_valid");
-    statusElement.classList.remove("text-success", "text-danger");
-    statusElement.classList.add(statusClass);
+      const statusElement = document.getElementById("is_valid");
+      statusElement.classList.remove("text-success", "text-danger");
+      statusElement.classList.add(statusClass);
 
-    sslInfoDiv.classList.remove("alert-info");
-    sslInfoDiv.classList.add(statusClass === "text-success" ? "alert-success" : "alert-danger");
+      if (error) {
+          const errorDiv = document.createElement("div");
+          errorDiv.className = "alert alert-warning mt-2";
+          errorDiv.textContent = `Error: ${error}`;
+          sslInfoDiv.appendChild(errorDiv);
+      }
+
+      sslInfoDiv.classList.remove("alert-info");
+      sslInfoDiv.classList.add(statusClass === "text-success" ? "alert-success" : "alert-danger");
   } else {
-    sslInfoDiv.classList.remove("alert-info");
-    sslInfoDiv.classList.add("alert-danger");
-    sslInfoDiv.innerHTML = "Error retrieving SSL information";
+      sslInfoDiv.classList.remove("alert-info");
+      sslInfoDiv.classList.add("alert-danger");
+      sslInfoDiv.innerHTML = "No SSL information available.";
   }
 }
+
 
 // Trigger SSL check on page load (optional)
 chrome.runtime.sendMessage({ action: "getSSLInfo" });

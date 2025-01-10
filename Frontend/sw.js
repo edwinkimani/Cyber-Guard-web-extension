@@ -62,19 +62,24 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     const parsedUrl = new URL(url);
     // Skip if URL is the BlockPage.html or if it's a new tab page
     if (
-      url.includes("BlockPage.html") || url === "chrome://newtab/" || url === "edge://newtab/"
+      url.includes("BlockPage.html") ||
+      url === "chrome://newtab/" ||
+      url === "edge://newtab/"
     ) {
       return; // Early return if the URL matches the conditions
     }
     // Skip if URL starts with 'chrome://' or 'chrome-extension://' or 'edge://'
-    if (url.startsWith("chrome://") || url.startsWith("chrome-extension://") ||url.startsWith("edge://")
+    if (
+      url.startsWith("chrome://") ||
+      url.startsWith("chrome-extension://") ||
+      url.startsWith("edge://")
     ) {
       return; // Early return if the URL is a browser internal page
     }
     // Check if the URL exists in IndexedDB
     try {
       const data = await getDataByValue(parsedUrl.origin); // Check if the URL is in IndexedDB
-      console.log("this is the data:",data)
+      console.log("this is the data:", data);
       if (data) {
         tabUrls.set(tabId, parsedUrl.origin);
         console.log("Data found for URL:", data);
@@ -130,7 +135,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 //start
 //**********
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-   if (!phishingEnabled) return; // Skip if phishingEnabled is disabled
+  if (!phishingEnabled) return; // Skip if phishingEnabled is disabled
   if (changeInfo.status === "complete" && tab.url) {
     const url = tab.url;
     const parsedUrl = new URL(url);
@@ -339,8 +344,6 @@ function getDataByValue(valueToFind) {
   });
 }
 
-
-
 // Background script (sw.js)
 let proxyList;
 
@@ -419,19 +422,27 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
           action: "phishingLinksFound",
           foundUrls: data.foundUrls,
         });
-        sendResponse({ phishingResults: data.phishingResults, bodyResults: data.bodyResults });
+        sendResponse({
+          phishingResults: data.phishingResults,
+          bodyResults: data.bodyResults,
+        });
       } else {
         console.warn("Invalid response format, 'foundUrls' missing.");
-        sendResponse({ phishingResults: [], bodyResults: { hasSuspiciousContent: false, reason: "" } });
+        sendResponse({
+          phishingResults: [],
+          bodyResults: { hasSuspiciousContent: false, reason: "" },
+        });
       }
     } catch (error) {
       console.error("Error validating links:", error);
-      sendResponse({ phishingResults: [], bodyResults: { hasSuspiciousContent: false, reason: "" } });
+      sendResponse({
+        phishingResults: [],
+        bodyResults: { hasSuspiciousContent: false, reason: "" },
+      });
     }
   }
   return true; // Keeps the message channel open for async response
 });
-
 
 // Function to send collected links to the backend for validation
 const validateLinksWithBackend = async (links) => {
@@ -621,11 +632,35 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
       if (tabs[0]) {
         const url = tabs[0].url;
-        const baseUrl = getBaseUrl(url);  // Ensure this function works properly
+        if (
+          url.includes("BlockPage.html") ||
+          url === "chrome://newtab/" ||
+          url === "edge://newtab/"
+        ) {
+          chrome.runtime.sendMessage({
+            action: "updateSSLInfo",
+            sslInfo: null,
+          });
+          return; // Early return if the URL matches the conditions
+        }
+        // Skip if URL starts with 'chrome://' or 'chrome-extension://' or 'edge://'
+        if (
+          url.startsWith("chrome://") ||
+          url.startsWith("chrome-extension://") ||
+          url.startsWith("edge://")
+        ) {
+          chrome.runtime.sendMessage({
+            action: "updateSSLInfo",
+            sslInfo: null,
+          });
+          return; // Early return if the URL is a browser internal page
+        }
+
+        const baseUrl = getBaseUrl(url); // Ensure this function works properly
 
         await getSSLCertificateInfo(baseUrl)
           .then((sslInfo) => {
-            console.log("Sending SSL Info:", sslInfo);  // Log here to see if data is correct
+            console.log("Sending SSL Info:", sslInfo);
             chrome.runtime.sendMessage({
               action: "updateSSLInfo",
               sslInfo: sslInfo,
@@ -635,7 +670,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             console.error("Error fetching SSL data:", error);
             chrome.runtime.sendMessage({
               action: "updateSSLInfo",
-              sslInfo: null,
+              sslInfo: {
+                issuedTo: "Unknown",
+                issuedBy: "Unknown",
+                validityPeriod: {
+                  validFrom: "N/A",
+                  validTo: "N/A",
+                },
+                isValid: false,
+                error: error.error || "Unknown error",
+              },
             });
           });
       } else {
@@ -647,7 +691,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
 });
-
 
 function getBaseUrl(url) {
   const parsedUrl = new URL(url);
@@ -664,6 +707,7 @@ async function getSSLCertificateInfo(baseUrl) {
       body: JSON.stringify({ domain: baseUrl }),
     });
     const data = await response.json();
+    console.log("returne", data);
     return data.data;
   } catch (error) {
     console.error("Error fetching SSL data:", error);
@@ -932,25 +976,25 @@ function blockPage(tabId) {
 //**********
 //end
 
-
 //
 chrome.downloads.onCreated.addListener((downloadItem) => {
   fetch("https://www.virustotal.com/api/v3/files", {
     method: "POST",
     headers: {
-      "x-apikey": "b838d3e1df9e69496fe4885c3c3e28c792951535913c2f7d6c67b20a8ce1370e"
+      "x-apikey":
+        "b838d3e1df9e69496fe4885c3c3e28c792951535913c2f7d6c67b20a8ce1370e",
     },
-    body: downloadItem.url
+    body: downloadItem.url,
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.data.attributes.last_analysis_stats.malicious > 0) {
-      chrome.notifications.create({
-        type: "basic",
-        iconUrl: "icons/icon48.png",
-        title: "Virus Detected!",
-        message: "A downloaded file contains a virus."
-      });
-    }
-  });
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.data.attributes.last_analysis_stats.malicious > 0) {
+        chrome.notifications.create({
+          type: "basic",
+          iconUrl: "icons/icon48.png",
+          title: "Virus Detected!",
+          message: "A downloaded file contains a virus.",
+        });
+      }
+    });
 });

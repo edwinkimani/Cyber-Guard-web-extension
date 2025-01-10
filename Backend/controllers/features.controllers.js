@@ -590,54 +590,41 @@ module.exports = {
     try {
       const { domain } = req.body;
       const hostname = new URL(domain).hostname;
-  
+
       const getSSLCertificateInfo = (hostname) => {
         return new Promise((resolve, reject) => {
           const options = {
             hostname: hostname,
             port: 443,
             method: "GET",
-            rejectUnauthorized: false,  // Allow expired/self-signed certs
+            rejectUnauthorized: false,
           };
-  
+
           const req = https.request(options, (response) => {
             const certificate = response.socket.getPeerCertificate();
-            
+
             if (certificate && Object.keys(certificate).length !== 0) {
               const validFrom = new Date(certificate.valid_from);
               const validTo = new Date(certificate.valid_to);
               const now = new Date();
-  
+
               const isExpired = now > validTo;
               const isNotYetValid = now < validFrom;
-  
-              if (isExpired || isNotYetValid) {
-                reject({
-                    issuedTo: certificate.subject.CN || "Unknown",
-                    issuedBy: certificate.issuer.CN || "Unknown",
-                    validityPeriod: {
-                      validFrom: certificate.valid_from,
-                      validTo: certificate.valid_to,
-                    },
-                    isValid: false,
-                });
-              } else {
-                resolve({
-                  issuedTo: certificate.subject.CN || "Unknown",
-                  issuedBy: certificate.issuer.CN || "Unknown",
-                  validityPeriod: {
-                    validFrom: certificate.valid_from,
-                    validTo: certificate.valid_to,
-                  },
-                  isValid: true,
-                });
-              }
+
+              resolve({
+                issuedTo: certificate.subject.CN || "Unknown",
+                issuedBy: certificate.issuer.CN || "Unknown",
+                validityPeriod: {
+                  validFrom: certificate.valid_from,
+                  validTo: certificate.valid_to,
+                },
+                isValid: !(isExpired || isNotYetValid),
+              });
             } else {
               reject({ error: "No SSL Certificate Found" });
             }
           });
-  
-          // Handle TLS errors (expired, self-signed, etc.)
+
           req.on("error", (e) => {
             let errorType = "Connection Error";
             switch (e.code) {
@@ -664,28 +651,27 @@ module.exports = {
               details: e.message,
             });
           });
-  
+
           req.end();
         });
       };
-  
+
       // Fetch certificate information
       const certificateInfo = await getSSLCertificateInfo(hostname);
       res.status(200).send({
         message: "SSL Certificate Information",
         data: certificateInfo,
       });
-  
     } catch (err) {
       console.error("Error:", err);
-  
+
       res.status(500).send({
         error: err.error || "Error fetching SSL certificate",
         details: err.data || err.details || "",
       });
     }
   },
-  
+
   scanDownloadedFiles: async (req, res, next) => {
     try {
       axios
@@ -721,6 +707,7 @@ module.exports = {
       });
     }
   },
+
   scanUrl: async (req, res, next) => {
     const { url } = req.body;
     const apiKey = process.env.VIRUSTOTAL_API_KEY;
@@ -748,7 +735,6 @@ module.exports = {
 
       const analysisId = data.data.id;
 
-
       // Step 2: Fetch the analysis results
       const analysisResponse = await fetch(
         `https://www.virustotal.com/api/v3/analyses/${analysisId}`,
@@ -762,7 +748,7 @@ module.exports = {
 
       const analysis = await analysisResponse.json();
 
-      console.log(analysis) 
+      console.log(analysis);
 
       if (analysis.data && analysis.data.attributes) {
         const stats = analysis.data.attributes.stats;
