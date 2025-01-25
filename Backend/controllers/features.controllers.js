@@ -41,10 +41,6 @@ const wordListPath = path.join(
   __dirname,
   "../utilities/passwords-word-list.txt"
 );
-const proxyListPath = path.join(
-  __dirname,
-  "../utilities/proxies.txt"
-);
 
 // Preload the wordList into memory
 let wordListSet = new Set();
@@ -266,7 +262,7 @@ module.exports = {
   proxyChainsSetup: async (req, res) => {
     try {
       const url =
-        "https://raw.githubusercontent.com/clarketm/proxy-list/refs/heads/master/proxy-list-raw.txt";
+        "https://raw.githubusercontent.com/edwinkimani/Cyber-Guard-web-extension/refs/heads/main/Backend/utilities/proxies.txt";
       const ipList = await fetchIpList(url);
 
       // Improved randomness
