@@ -41,6 +41,10 @@ const wordListPath = path.join(
   __dirname,
   "../utilities/passwords-word-list.txt"
 );
+const proxyListPath = path.join(
+  __dirname,
+  "../utilities/proxies.txt"
+);
 
 // Preload the wordList into memory
 let wordListSet = new Set();
@@ -262,7 +266,7 @@ module.exports = {
   proxyChainsSetup: async (req, res) => {
     try {
       const url =
-        "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt";
+        "https://raw.githubusercontent.com/clarketm/proxy-list/refs/heads/master/proxy-list-raw.txt";
       const ipList = await fetchIpList(url);
 
       // Improved randomness

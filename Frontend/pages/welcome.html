@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../icons/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon/favicon-16x16.png">
+    <link rel="manifest" href="../icons/favicon/site.webmanifest">
+    <title>Welcome to Cyber Guard</title>
+    <style>
+        body {
+            background-color: #004369;
+            color: white;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            /* Adjust the space between the cards */
+        }
+
+        .card-title {
+            color: #002C61;
+            font-weight: bold;
+        }
+
+        .card-text {
+            color: #333;
+            /* Ensures the text in cards is visible */
+        }
+
+        .btn-signup {
+            background-color: #00F5FF;
+            color: #002C61;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+
+        .btn-signup:hover {
+            background-color: #002C61;
+            color: white;
+        }
+
+        .card {
+            flex: 0 0 280px;
+            /* Fix card width */
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            /* Ensures content is contained */
+            text-align: center;
+            min-height: 100%;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            /* Enlarge on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-img-top {
+            height: 180px;
+            /* Fix image height */
+            object-fit: cover;
+            /* Ensure image fits */
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .card-body {
+            padding: 16px;
+            text-align: center;
+        }
+
+        .card-text {
+            overflow: hidden;
+            /* Contain overflow text */
+            text-overflow: ellipsis;
+            /* Add ellipsis if the text overflows */
+            white-space: normal;
+            /* Wrap the text */
+            display: -webkit-box;
+            /* Create a text container for truncation */
+            -webkit-line-clamp: 3;
+            /* Limit to 3 lines */
+            -webkit-box-orient: vertical;
+        }
+
+        .scrollable-features {
+            overflow-x: auto;
+            /* Enable horizontal scrolling */
+            overflow-y: hidden;
+            /* Hide vertical overflow */
+            white-space: nowrap;
+            /* Prevent wrapping to the next line */
+            padding: 20px;
+            background-color: #f8f9fa;
+            /* Optional background */
+        }
+
+        .scroll-row {
+            display: flex;
+            gap: 20px;
+            /* Spacing between cards */
+        }
+
+        .scrollable-features::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .scrollable-features::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 8px;
+        }
+
+        .features-section {
+            max-width: 1200px;
+            margin: 10px auto;
+            padding: 20px;
+        }
+
+        .scrollable-features {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 0;
+        }
+
+        .scroll-row {
+            display: flex;
+            gap: 16px;
+            /* Reduce spacing */
+        }
+
+        .scrollable-features::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .scrollable-features::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 4px;
+        }
+
+        .scrollable-features::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+
+        .card-img-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            /* Adjust as necessary */
+        }
+
+        .card-img-top {
+            height: 50px;
+            width: 50px;
+            object-fit: contain;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container-fluid p-0" style="min-height: 100vh;">
+        <!-- Navbar -->
+        <nav style="background-color: #002C61;" class="navbar">
+            <div class="container-fluid">
+                <a style="color: #00F5FF !important;" class="navbar-brand" href="#">
+                    <img src="../icons/apple-touch-icon.png" width="50" height="50" alt="Cyber Guard Logo">
+                    <b>Cyber Guard</b>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Welcome Message -->
+        <div class="container mt-5 text-center">
+            <h1 class="mb-3">Welcome to Cyber Guard</h1>
+            <p>Your ultimate solution for secure and worry-free browsing. Explore our features and start protecting your
+                digital life today.</p>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section mt-4">
+            <h2 class="text-center mb-1">Features</h2>
+            <div class="scrollable-features">
+                <div class="scroll-row">
+                    <!-- SSL Certificate Card -->
+                    <div class="card">
+                        <img style="height: 50px;width: 50px;" src="../icons/ssl.png" class="card-img-top"
+                            alt="SSL Authentication Feature">
+                        <div class="card-body">
+                            <h5 class="card-title">SSL Certificate Authentication</h5>
+                            <p class="card-text">Verify the authenticity of websites to ensure secure browsing and
+                                prevent phishing attacks.</p>
+                        </div>
+                    </div>
+                    <!-- Password Strength Card -->
+                    <div class="card">
+                        <img style="height: 50px;width: 50px;" src="../icons/cyber-security (1).png"
+                            class="card-img-top" alt="Password Strength Feature">
+                        <div class="card-body">
+                            <h5 class="card-title">Password Strength Testing</h5>
+                            <p class="card-text">Receive real-time feedback on your password strength and improve
+                                security effortlessly.</p>
+                        </div>
+                    </div>
+                    <!-- Parental Control Card -->
+                    <div class="card">
+                        <img style="height: 50px;width: 50px;" src="../icons/parental-control.png" class="card-img-top"
+                            alt="Parental Control Feature">
+                        <div class="card-body">
+                            <h5 class="card-title">Parental Control</h5>
+                            <p class="card-text">Set restrictions on 18+ content and block specific sites to protect
+                                your family online.</p>
+                            <a href="./signup.html" class="btn btn-primary w-100 mt-2">Sign Up</a>
+                        </div>
+                    </div>
+                    <!-- Ad Blocker Card -->
+                    <div class="card">
+                        <img style="height: 50px;width: 50px;" src="../icons/block (1).png" class="card-img-top"
+                            alt="Parental Control Feature">
+                        <div class="card-body">
+                            <h5 class="card-title">Ad Blocker</h5>
+                            <p class="card-text">Block annoying YouTube ads and enjoy uninterrupted browsing.</p>
+                        </div>
+                    </div>
+                    <!-- Malware Detection Card -->
+                    <div class="card">
+                        <img style="height: 50px;width: 50px;" src="../icons/scanning.png" class="card-img-top"
+                            alt="Parental Control Feature">
+                        <div class="card-body">
+                            <h5 class="card-title">Malware Detection</h5>
+                            <p class="card-text">Scan websites for malware, phishing attempts, and proxy injections.</p>
+                        </div>
+                    </div>
+                    <!-- Phishing Card -->
+                    <div class="card">
+                        <img style="height: 50px;width: 50px;" src="../icons/cybercrime.png" class="card-img-top"
+                            alt="Parental Control Feature">
+                        <div class="card-body">
+                            <h5 class="card-title">Phishing sites block</h5>
+                            <p class="card-text">Real time detection of phishing sites and block them.</p>
+                        </div>
+                    </div>
+                    <!-- Phishing Card -->
+                    <div class="card">
+                        <img style="height: 50px;width: 50px;" src="../icons/proxy (1).png" class="card-img-top"
+                            alt="Parental Control Feature">
+                        <div class="card-body">
+                            <h5 class="card-title">Proxy injection</h5>
+                            <p class="card-text">Inject proxies to bypass firewall and proxy settings.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+        integrity="sha384-eMNrs9L9hY/HEOGg/OwcOoRjz0wtpqFjAWeIuDBv2Aozhi3Ub20aJ7yrdxkMf1X3"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhG81rK92zO21O6fGZZ9GqAB1q6qF1iUJJoG05EY1eD45e5std0Of+qtVZii"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

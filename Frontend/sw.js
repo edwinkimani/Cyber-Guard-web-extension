@@ -998,3 +998,10 @@ chrome.downloads.onCreated.addListener((downloadItem) => {
       }
     });
 });
+
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === "install") {
+      // Open the welcome page upon installation
+      chrome.tabs.create({ url: "/pages/welcome.html" });
+  }
+});
