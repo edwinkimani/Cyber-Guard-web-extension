@@ -262,7 +262,7 @@ module.exports = {
   proxyChainsSetup: async (req, res) => {
     try {
       const url =
-        "https://spys.me/proxy.txt";
+        "https://cdn.jsdelivr.net/gh/proxifly/free-proxy-list@main/proxies/all/data.txt";
       const ipList = await fetchIpList(url);
 
       // Improved randomness
