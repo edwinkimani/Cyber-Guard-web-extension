@@ -262,7 +262,7 @@ module.exports = {
   proxyChainsSetup: async (req, res) => {
     try {
       const url =
-        "https://raw.githubusercontent.com/edwinkimani/Cyber-Guard-web-extension/refs/heads/main/Backend/utilities/proxies.txt";
+        "https://spys.me/proxy.txt";
       const ipList = await fetchIpList(url);
 
       // Improved randomness
