@@ -1,127 +1,165 @@
 document.addEventListener("DOMContentLoaded", function () {
-  document.addEventListener("DOMContentLoaded", function () {
-    const collapseElement = document.getElementById("multiCollapseExample2");
-    const toggleButton = document.getElementById("toggleButton");
-  
-    toggleButton.addEventListener("click", function () {
-      const bsCollapse = new bootstrap.Collapse(collapseElement, {
-        toggle: false, // Prevent automatic toggle on initialization
-      });
-  
-      if (collapseElement.classList.contains("show")) {
-        bsCollapse.hide(); // Collapse the element
-      } else {
-        bsCollapse.show(); // Expand the element
-      }
-    });
-  });  
+    // Get references to all elements
+    const advanceButton = document.getElementById("advanceButton");
+    const authForm = document.getElementById("authForm");
+    const clearButton = document.getElementById("clearButton");
+    const myForm = document.getElementById("myForm");
+    const backButton = document.getElementById("backButton");
+    
+    // Toggle authentication form visibility
+    if (advanceButton && authForm) {
+        advanceButton.addEventListener("click", function() {
+            // Toggle the form display
+            authForm.style.display = authForm.style.display === "none" ? "block" : "none";
+            
+            // Update button text based on form state
+            const icon = advanceButton.querySelector("i");
+            if (authForm.style.display === "block") {
+                advanceButton.innerHTML = '<i class="fas fa-lock me-2"></i> Hide Advanced Access';
+                icon.classList.replace("fa-lock-open", "fa-lock");
+            } else {
+                advanceButton.innerHTML = '<i class="fas fa-lock-open me-2"></i> Advanced Access';
+                icon.classList.replace("fa-lock", "fa-lock-open");
+            }
+        });
+    }
 
-  function storeMostRecentUrl() {
-    chrome.history.search({ text: "", maxResults: 2 }, function (data) {
-      if (data.length > 0) {
-        // The first item in the data array is the most recent URL
-        const mostRecentPage = data[1];
-        const parsedUrl = new URL(mostRecentPage.url);
-        console.log("Most Recent URL:", parsedUrl.origin); // Log the most recent URL
+    // Clear form button
+    if (clearButton && myForm) {
+        clearButton.addEventListener("click", function() {
+            myForm.reset();
+        });
+    }
 
-        // Store the URL in IndexedDB
-        addData({value: parsedUrl.origin });
-      } else {
-        console.log("No history found.");
-      }
-    });
-  }
+    // Back button functionality
+    if (backButton) {
+        backButton.addEventListener("click", function(e) {
+            e.preventDefault();
+            redirectToNewTab();
+        });
+    }
 
-  document.getElementById("myForm").addEventListener("submit", function (e) {
-    e.preventDefault(); // Prevents the default form submission behavior
+    // Form submission
+    if (myForm) {
+        myForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            handleFormSubmission();
+        });
+    }
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const toastElement = document.getElementById("liveToast");
-    const messageParagraph = document.querySelector(".message");
+    // Redirect to browser's new tab page
+    function redirectToNewTab() {
+        const newTabUrls = [
+            "chrome://newtab/",
+            "edge://newtab/",
+            "about:newtab",
+            "about:blank"
+        ];
 
-    const data = {
-      email,
-      password,
-    };
-
-    fetch("http://127.0.0.1:8000/api/Authentication", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.validation) {
-          storeMostRecentUrl();
-          messageParagraph.textContent =
-            "Authentication successful. Redirecting...";
-          toastElement.classList.remove("bg-danger");
-          toastElement.classList.add("bg-success");
-
-          const toast = new bootstrap.Toast(toastElement);
-          toast.show();
-
-          // Redirect after showing toast
-          setTimeout(() => {
-            window.history.back();
-          }, 2000);
-        } else {
-          messageParagraph.textContent = "Authentication failed.";
-          toastElement.classList.remove("bg-success");
-          toastElement.classList.add("bg-danger");
-
-          const toast = new bootstrap.Toast(toastElement);
-          toast.show();
+        for (const url of newTabUrls) {
+            try {
+                window.location.href = url;
+                return;
+            } catch (e) {
+                continue;
+            }
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  });
+        
+        window.open(newTabUrls[0], "_blank");
+    }
 
-  document.getElementById("back").addEventListener("click", function (e) {
-    e.preventDefault();
-    window.open("edge://new", "_blank");
-  });
+    async function handleFormSubmission() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const toastElement = document.getElementById("liveToast");
+        const messageParagraph = document.querySelector(".message");
 
-  document
-    .getElementById("toggleButtonClear")
-    .addEventListener("click", function () {
-      document.getElementById("myForm").reset(); // Reset form fields
-    });
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/Authentication", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (data.validation) {
+                // Show success message
+                messageParagraph.textContent = "Authentication successful!";
+                toastElement.classList.remove("bg-danger");
+                toastElement.classList.add("bg-success");
+                
+                const toast = new bootstrap.Toast(toastElement);
+                toast.show();
+
+                // Redirect after delay
+                setTimeout(() => {
+                    redirectToNewTab();
+                }, 2000);
+            } else {
+                showError("Authentication failed. Please try again.");
+            }
+        } catch (error) {
+            console.error("Authentication error:", error);
+            showError("Network error. Please try again later.");
+        }
+    }
+
+    function showError(message) {
+        const toastElement = document.getElementById("liveToast");
+        const messageParagraph = document.querySelector(".message");
+        
+        messageParagraph.textContent = message;
+        toastElement.classList.remove("bg-success");
+        toastElement.classList.add("bg-danger");
+        
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+    }
 });
 
-function openDatabase() {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open("AllowedSites", 1);
-  
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains("allowedSitesURL")) {
-          db.createObjectStore("allowedSitesURL", { keyPath: "id", autoIncrement: true });
-        }
-      };
-  
-      request.onsuccess = (event) => {
-        resolve(event.target.result);
-      };
-  
-      request.onerror = (event) => {
-        reject(`Database error: ${event.target.errorCode}`);
-      };
-    });
-  }
+document.addEventListener("DOMContentLoaded", function () {
+    const backButton = document.getElementById("backButton");
+    
+    if (backButton) {
+        backButton.addEventListener("click", function(e) {
+            e.preventDefault();
+            redirectToNewTab();
+        });
+    }
 
-function addData(data) {
-    openDatabase().then((db) => {
-      const transaction = db.transaction(["allowedSitesURL"], "readwrite");
-      const store = transaction.objectStore("allowedSitesURL");
-  
-      const request = store.add(data);
-      request.onsuccess = () => console.log("Data added successfully.");
-      request.onerror = (event) => console.error("Error adding data:", event);
-    });
-  }
+    // Proper way to redirect to new tab in Chrome extension
+    function redirectToNewTab() {
+        // Option 1: Use chrome.tabs API (best solution)
+        if (chrome.tabs) {
+            chrome.tabs.create({ url: "chrome://newtab/" }, function(tab) {
+                if (chrome.runtime.lastError) {
+                    // Fallback if chrome://newtab/ fails
+                    chrome.tabs.create({ url: "about:blank" });
+                }
+            });
+            return;
+        }
+
+        // Option 2: For non-extension contexts (like regular web pages)
+        try {
+            // Try Edge first
+            window.open("edge://newtab/", "_blank") ||
+            // Then try Firefox
+            window.open("about:newtab", "_blank") ||
+            // Final fallback
+            window.open("about:blank", "_blank");
+        } catch (e) {
+            console.error("Redirection failed:", e);
+            // Ultimate fallback - create a blank page
+            document.body.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <h2>Redirection failed</h2>
+                    <p>Please open a new tab manually.</p>
+                </div>
+            `;
+        }
+    }
+});

@@ -11,266 +11,527 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon/favicon-16x16.png">
     <link rel="manifest" href="../icons/favicon/site.webmanifest">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <script src="../src/bootstrap.min.js"></script>
-    <title>Welcome to Cyber Guard</title>
+    <title>Welcome to Cyber Guard | Ultimate Online Protection</title>
     <style>
+        :root {
+            --primary-dark: #002C61;
+            --primary-light: #00F5FF;
+            --gradient: linear-gradient(135deg, #004369 0%, #007bff 100%);
+            --card-bg: rgba(255, 255, 255, 0.15);
+        }
+        
         body {
-            background-color: #004369;
-            color: white;
+            background: var(--gradient);
+            color: #fff;
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .card-container {
+        .navbar {
+            background: rgba(0, 44, 97, 0.95) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(0, 245, 255, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            /* Adjust the space between the cards */
+            align-items: center;
+            gap: 12px;
+            color: var(--primary-light) !important;
+            transition: all 0.3s ease;
         }
 
-        .card-title {
-            color: #002C61;
-            font-weight: bold;
+        .navbar-brand:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 2px 8px rgba(0, 245, 255, 0.4);
         }
 
-        .card-text {
-            color: #333;
-            /* Ensures the text in cards is visible */
+        .navbar-brand img {
+            transition: all 0.3s ease;
         }
 
-        .btn-signup {
-            background-color: #00F5FF;
-            color: #002C61;
-            font-weight: bold;
-            border-radius: 10px;
+        .navbar-brand:hover img {
+            transform: rotate(10deg);
         }
 
-        .btn-signup:hover {
-            background-color: #002C61;
-            color: white;
-        }
-
-        .card {
-            flex: 0 0 280px;
-            /* Fix card width */
-            border-radius: 12px;
-            padding: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            background-color: white;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
-            /* Ensures content is contained */
+        .hero-section {
+            padding: 4rem 0;
             text-align: center;
-            min-height: 100%;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-            /* Enlarge on hover */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-img-top {
-            height: 180px;
-            /* Fix image height */
-            object-fit: cover;
-            /* Ensure image fits */
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-        }
-
-        .card-body {
-            padding: 16px;
-            text-align: center;
-        }
-
-        .card-text {
+            position: relative;
             overflow: hidden;
-            /* Contain overflow text */
-            text-overflow: ellipsis;
-            /* Add ellipsis if the text overflows */
-            white-space: normal;
-            /* Wrap the text */
-            display: -webkit-box;
-            /* Create a text container for truncation */
-            -webkit-line-clamp: 3;
-            /* Limit to 3 lines */
-            -webkit-box-orient: vertical;
         }
 
-        .scrollable-features {
-            overflow-x: auto;
-            /* Enable horizontal scrolling */
-            overflow-y: hidden;
-            /* Hide vertical overflow */
-            white-space: nowrap;
-            /* Prevent wrapping to the next line */
-            padding: 20px;
-            background-color: #f8f9fa;
-            /* Optional background */
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 245, 255, 0.1) 0%, transparent 70%);
+            z-index: -1;
+            animation: pulse 15s infinite alternate;
         }
 
-        .scroll-row {
-            display: flex;
-            gap: 20px;
-            /* Spacing between cards */
+        @keyframes pulse {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+            100% { transform: translate(0, 0); }
         }
 
-        .scrollable-features::-webkit-scrollbar {
-            height: 8px;
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(to right, #00F5FF, #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: fadeInDown 1s ease;
         }
 
-        .scrollable-features::-webkit-scrollbar-thumb {
-            background-color: #007bff;
-            border-radius: 8px;
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .cta-button {
+            background: linear-gradient(90deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            color: white;
+            font-weight: 700;
+            border-radius: 50px;
+            padding: 0.8rem 2.5rem;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 245, 255, 0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .cta-button:hover {
+            background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 245, 255, 0.4);
+            color: white;
         }
 
         .features-section {
             max-width: 1200px;
-            margin: 10px auto;
-            padding: 20px;
+            margin: 3rem auto;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .features-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary-dark));
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-light);
+            margin-bottom: 2rem;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
         }
 
         .scrollable-features {
             overflow-x: auto;
-            white-space: nowrap;
-            padding: 10px 0;
-        }
-
-        .scroll-row {
-            display: flex;
-            gap: 16px;
-            /* Reduce spacing */
+            padding: 20px 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-light) rgba(255, 255, 255, 0.1);
         }
 
         .scrollable-features::-webkit-scrollbar {
             height: 8px;
         }
 
-        .scrollable-features::-webkit-scrollbar-thumb {
-            background-color: #007bff;
-            border-radius: 4px;
-        }
-
         .scrollable-features::-webkit-scrollbar-track {
-            background-color: #f1f1f1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
         }
 
-        .card-img-container {
+        .scrollable-features::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        .features-row {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100px;
-            /* Adjust as necessary */
+            gap: 30px;
+            padding-bottom: 20px;
+            width: max-content;
+            margin: 0 auto;
         }
 
-        .card-img-top {
-            height: 50px;
-            width: 50px;
+        .feature-card {
+            flex: 0 0 300px;
+            border-radius: 20px;
+            padding: 25px 20px;
+            background: var(--card-bg);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(8px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+            min-height: 350px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 12px 40px rgba(0, 245, 255, 0.25);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            height: 80px;
+            width: 80px;
             object-fit: contain;
+            margin: 0 auto 20px;
+            filter: drop-shadow(0 4px 8px rgba(0, 44, 97, 0.2));
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 6px 12px rgba(0, 245, 255, 0.3));
+        }
+
+        .feature-title {
+            color: white;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        .feature-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: var(--primary-light);
+            transition: width 0.3s ease;
+        }
+
+        .feature-card:hover .feature-title::after {
+            width: 80px;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .feature-button {
+            background: linear-gradient(90deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            color: white;
+            font-weight: 600;
+            border-radius: 50px;
+            padding: 0.6rem 1.5rem;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 245, 255, 0.2);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .feature-button:hover {
+            background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 245, 255, 0.3);
+        }
+
+        .footer {
+            background: rgba(0, 44, 97, 0.8);
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(0, 245, 255, 0.1);
+        }
+
+        .footer p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .feature-card {
+                flex: 0 0 280px;
+                min-height: 320px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+                max-width: 90%;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .features-section {
+                padding: 2rem 1rem;
+                border-radius: 20px;
+            }
+            
+            .feature-card {
+                flex: 0 0 260px;
+                min-height: 300px;
+                padding: 20px 15px;
+            }
+            
+            .feature-icon {
+                height: 70px;
+                width: 70px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            
+            .navbar-brand img {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
+            .feature-card {
+                flex: 0 0 220px;
+                min-height: 280px;
+            }
+            
+            .feature-title {
+                font-size: 1.1rem;
+            }
+            
+            .feature-description {
+                font-size: 0.9rem;
+            }
         }
     </style>
-
 </head>
 
 <body>
-    <div class="container-fluid p-0" style="min-height: 100vh;">
-        <!-- Navbar -->
-        <nav style="background-color: #002C61;" class="navbar">
-            <div class="container-fluid">
-                <a style="color: #00F5FF !important;" class="navbar-brand" href="#">
-                    <img src="../icons/apple-touch-icon.png" width="50" height="50" alt="Cyber Guard Logo">
-                    <b>Cyber Guard</b>
-                </a>
-            </div>
-        </nav>
-
-        <!-- Welcome Message -->
-        <div class="container mt-5 text-center">
-            <h1 style="color: #00F5FF;" class="mb-3">Welcome to Cyber Guard</h1>
-            <p>Your ultimate solution for secure and worry-free browsing. Explore our features and start protecting your
-                digital life today.</p>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="../icons/apple-touch-icon.png" width="50" height="50" alt="Cyber Guard Logo">
+                Cyber Guard
+            </a>
         </div>
+    </nav>
 
-        <!-- Features Section -->
-        <div class="features-section mt-4">
-            <h2 class="text-center mb-1">Features</h2>
-            <div class="scrollable-features">
-                <div class="scroll-row">
-                    <!-- SSL Certificate Card -->
-                    <div class="card">
-                        <img style="height: 50px;width: 50px;" src="../icons/ssl.png" class="card-img-top"
-                            alt="SSL Authentication Feature">
-                        <div class="card-body">
-                            <h5 class="card-title">SSL Certificate Authentication</h5>
-                            <p class="card-text">Verify the authenticity of websites to ensure secure browsing and
-                                prevent phishing attacks.</p>
-                        </div>
-                    </div>
-                    <!-- Password Strength Card -->
-                    <div class="card">
-                        <img style="height: 50px;width: 50px;" src="../icons/cyber-security (1).png"
-                            class="card-img-top" alt="Password Strength Feature">
-                        <div class="card-body">
-                            <h5 class="card-title">Password Strength Testing</h5>
-                            <p class="card-text">Receive real-time feedback on your password strength and improve
-                                security effortlessly.</p>
-                        </div>
-                    </div>
-                    <!-- Parental Control Card -->
-                    <div class="card">
-                        <img style="height: 50px;width: 50px;" src="../icons/parental-control.png" class="card-img-top"
-                            alt="Parental Control Feature">
-                        <div class="card-body">
-                            <h5 class="card-title">Parental Control</h5>
-                            <p class="card-text">Set restrictions on 18+ content and block specific sites to protect
-                                your family online.</p>
-                            <a href="./signup.html" class="btn btn-primary w-100 mt-2">Sign Up</a>
-                        </div>
-                    </div>
-                    <!-- Ad Blocker Card -->
-                    <div class="card">
-                        <img style="height: 50px;width: 50px;" src="../icons/block (1).png" class="card-img-top"
-                            alt="Parental Control Feature">
-                        <div class="card-body">
-                            <h5 class="card-title">Ad Blocker</h5>
-                            <p class="card-text">Block annoying YouTube ads and enjoy uninterrupted browsing.</p>
-                        </div>
-                    </div>
-                    <!-- Malware Detection Card -->
-                    <div class="card">
-                        <img style="height: 50px;width: 50px;" src="../icons/scanning.png" class="card-img-top"
-                            alt="Parental Control Feature">
-                        <div class="card-body">
-                            <h5 class="card-title">Malware Detection</h5>
-                            <p class="card-text">Scan websites for malware, phishing attempts, and proxy injections.</p>
-                        </div>
-                    </div>
-                    <!-- Phishing Card -->
-                    <div class="card">
-                        <img style="height: 50px;width: 50px;" src="../icons/cybercrime.png" class="card-img-top"
-                            alt="Parental Control Feature">
-                        <div class="card-body">
-                            <h5 class="card-title">Phishing sites block</h5>
-                            <p class="card-text">Real time detection of phishing sites and block them.</p>
-                        </div>
-                    </div>
-                    <!-- Phishing Card -->
-                    <div class="card">
-                        <img style="height: 50px;width: 50px;" src="../icons/proxy (1).png" class="card-img-top"
-                            alt="Parental Control Feature">
-                        <div class="card-body">
-                            <h5 class="card-title">Proxy injection</h5>
-                            <p class="card-text">Inject proxies to bypass firewall and proxy settings.</p>
-                        </div>
-                    </div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title animate__animated animate__fadeInDown">Welcome to Cyber Guard</h1>
+            <p class="hero-subtitle animate__animated animate__fadeIn">
+                Your ultimate solution for secure and worry-free browsing. Explore our premium features and 
+                start protecting your digital life today with enterprise-grade security.
+            </p>
+            <a href="./signup.html" class="cta-button animate__animated animate__fadeInUp">Get Protected Now</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <h2 class="section-title animate__animated animate__fadeIn">Premium Security Features</h2>
+        <div class="scrollable-features">
+            <div class="features-row">
+                <!-- SSL Certificate Card -->
+                <div class="feature-card animate__animated animate__fadeInLeft">
+                    <img src="../icons/ssl.png" class="feature-icon" alt="SSL Authentication">
+                    <h3 class="feature-title">SSL Certificate Verification</h3>
+                    <p class="feature-description">
+                        Authenticate website certificates in real-time to ensure secure connections 
+                        and prevent sophisticated phishing attacks.
+                    </p>
+                    <a href="./signup.html" class="feature-button">Learn More</a>
+                </div>
+                
+                <!-- Password Strength Card -->
+                <div class="feature-card animate__animated animate__fadeInLeft animate__delay-1s">
+                    <img src="../icons/cyber-security (1).png" class="feature-icon" alt="Password Strength">
+                    <h3 class="feature-title">Advanced Password Analysis</h3>
+                    <p class="feature-description">
+                        Get instant feedback on password strength with our AI-powered analysis 
+                        and recommendations for maximum security.
+                    </p>
+                    <a href="./signup.html" class="feature-button">Learn More</a>
+                </div>
+                
+                <!-- Parental Control Card -->
+                <div class="feature-card animate__animated animate__fadeInLeft animate__delay-2s">
+                    <img src="../icons/parental-control.png" class="feature-icon" alt="Parental Control">
+                    <h3 class="feature-title">Smart Parental Controls</h3>
+                    <p class="feature-description">
+                        Comprehensive content filtering with customizable restrictions to create 
+                        a safe online environment for your family.
+                    </p>
+                    <a href="./signup.html" class="feature-button">Get Started</a>
+                </div>
+                
+                <!-- Ad Blocker Card -->
+                <div class="feature-card animate__animated animate__fadeInLeft animate__delay-3s">
+                    <img src="../icons/block (1).png" class="feature-icon" alt="Ad Blocker">
+                    <h3 class="feature-title">Intelligent Ad Blocking</h3>
+                    <p class="feature-description">
+                        Eliminate distracting ads, pop-ups, and trackers for faster, cleaner 
+                        browsing across all websites.
+                    </p>
+                    <a href="./signup.html" class="feature-button">Learn More</a>
+                </div>
+                
+                <!-- Malware Detection Card -->
+                <div class="feature-card animate__animated animate__fadeInLeft animate__delay-4s">
+                    <img src="../icons/scanning.png" class="feature-icon" alt="Malware Detection">
+                    <h3 class="feature-title">Real-time Malware Scan</h3>
+                    <p class="feature-description">
+                        Advanced scanning technology detects and blocks malware, ransomware, 
+                        and other threats before they reach your device.
+                    </p>
+                    <a href="./signup.html" class="feature-button">Learn More</a>
+                </div>
+                
+                <!-- Phishing Card -->
+                <div class="feature-card animate__animated animate__fadeInLeft animate__delay-5s">
+                    <img src="../icons/cybercrime.png" class="feature-icon" alt="Phishing Protection">
+                    <h3 class="feature-title">Phishing Protection</h3>
+                    <p class="feature-description">
+                        Our constantly updated database identifies and blocks phishing attempts 
+                        with 99.9% accuracy.
+                    </p>
+                    <a href="./signup.html" class="feature-button">Learn More</a>
+                </div>
+                
+                <!-- Proxy Card -->
+                <div class="feature-card animate__animated animate__fadeInLeft animate__delay-6s">
+                    <img src="../icons/proxy (1).png" class="feature-icon" alt="Proxy Injection">
+                    <h3 class="feature-title">Secure Proxy Solutions</h3>
+                    <p class="feature-description">
+                        Enterprise-grade proxy integration with end-to-end encryption for 
+                        secure browsing on restricted networks.
+                    </p>
+                    <a href="./signup.html" class="feature-button">Learn More</a>
                 </div>
             </div>
         </div>
+    </section>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2023 Cyber Guard. All rights reserved. Protecting your digital life.</p>
+        </div>
+    </footer>
 
-    </div>
+   <script src="../src/Welcome.js"></script>
 </body>
 
 </html>

@@ -630,88 +630,106 @@ chrome.action.onClicked.addListener(async (tab) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getSSLInfo") {
     chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-      if (tabs[0]) {
-        const url = tabs[0].url;
-        if (
-          url.includes("BlockPage.html") ||
-          url === "chrome://newtab/" ||
-          url === "edge://newtab/"
-        ) {
-          chrome.runtime.sendMessage({
-            action: "updateSSLInfo",
-            sslInfo: null,
-          });
-          return; // Early return if the URL matches the conditions
-        }
-        // Skip if URL starts with 'chrome://' or 'chrome-extension://' or 'edge://'
-        if (
-          url.startsWith("chrome://") ||
-          url.startsWith("chrome-extension://") ||
-          url.startsWith("edge://")
-        ) {
-          chrome.runtime.sendMessage({
-            action: "updateSSLInfo",
-            sslInfo: null,
-          });
-          return; // Early return if the URL is a browser internal page
-        }
-
-        const baseUrl = getBaseUrl(url); // Ensure this function works properly
-
-        await getSSLCertificateInfo(baseUrl)
-          .then((sslInfo) => {
-            console.log("Sending SSL Info:", sslInfo);
-            chrome.runtime.sendMessage({
-              action: "updateSSLInfo",
-              sslInfo: sslInfo,
-            });
-          })
-          .catch((error) => {
-            console.error("Error fetching SSL data:", error);
-            chrome.runtime.sendMessage({
-              action: "updateSSLInfo",
-              sslInfo: {
-                issuedTo: "Unknown",
-                issuedBy: "Unknown",
-                validityPeriod: {
-                  validFrom: "N/A",
-                  validTo: "N/A",
-                },
-                isValid: false,
-                error: error.error || "Unknown error",
-              },
-            });
-          });
-      } else {
+      if (!tabs[0]) {
         chrome.runtime.sendMessage({
           action: "updateSSLInfo",
-          sslInfo: null,
+          sslInfo: null
+        });
+        return;
+      }
+
+      const url = tabs[0].url;
+      
+      // Skip special pages
+      if (url.includes("BlockPage.html") || 
+          url === "chrome://newtab/" || 
+          url === "edge://newtab/" ||
+          url.startsWith("chrome://") ||
+          url.startsWith("chrome-extension://") ||
+          url.startsWith("edge://")) {
+        chrome.runtime.sendMessage({
+          action: "updateSSLInfo",
+          sslInfo: null
+        });
+        return;
+      }
+
+      try {
+        const baseUrl = getBaseUrl(url);
+        const sslInfo = await getSSLCertificateInfo(baseUrl);
+        
+        // Ensure we have the expected data structure
+        const formattedInfo = {
+          isValid: sslInfo?.isValid || false,
+          issuedTo: sslInfo?.issuedTo || baseUrl,
+          issuedBy: sslInfo?.issuedBy || "Unknown",
+          validityPeriod: {
+            validFrom: sslInfo?.validityPeriod?.validFrom || "N/A",
+            validTo: sslInfo?.validityPeriod?.validTo || "N/A"
+          },
+          domain: baseUrl
+        };
+
+        console.log("Sending SSL Info:", formattedInfo);
+        chrome.runtime.sendMessage({
+          action: "updateSSLInfo",
+          sslInfo: formattedInfo
+        });
+      } catch (error) {
+        console.error("Error fetching SSL data:", error);
+        chrome.runtime.sendMessage({
+          action: "updateSSLInfo",
+          sslInfo: {
+            isValid: false,
+            issuedTo: "Unknown",
+            issuedBy: "Unknown",
+            validityPeriod: {
+              validFrom: "N/A",
+              validTo: "N/A"
+            },
+            error: error.message || "Failed to fetch SSL certificate"
+          }
         });
       }
     });
   }
+  return true; // Required for async sendResponse
 });
 
 function getBaseUrl(url) {
-  const parsedUrl = new URL(url);
-  return `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.hostname;
+  } catch (e) {
+    console.error("Error parsing URL:", e);
+    return url;
+  }
 }
 
-async function getSSLCertificateInfo(baseUrl) {
+async function getSSLCertificateInfo(domain) {
   try {
     const response = await fetch("http://127.0.0.1:8000/api/sslCertificate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ domain: baseUrl }),
+      body: JSON.stringify({ domain })
     });
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+
     const data = await response.json();
-    console.log("returne", data);
+    
+    if (!data.data) {
+      throw new Error("No SSL data returned from API");
+    }
+
     return data.data;
   } catch (error) {
-    console.error("Error fetching SSL data:", error);
-    return null;
+    console.error("Error in getSSLCertificateInfo:", error);
+    throw error;
   }
 }
 //***********

@@ -3,21 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../pages/css/AdBlocker.css">
-    <link rel="stylesheet" href="./css/AdBlocker.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>AdBlocker</title>
     <style>
+      :root {
+        --primary-blue: #002D62;
+        --accent-teal: #5DCAD1;
+        --highlight-cyan: #00F5FF;
+        --alert-red: #ED524E;
+        --light-bg: #F8F9FA;
+        --card-bg: #D4EDDA;
+      }
+      
       html, body {
         width: 400px;
         height: 500px;
         margin: 0;
         overflow-y: scroll;
         overflow-x: hidden;
-        padding: 0px;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
+      
+      /* Scrollbar styling */
       ::-webkit-scrollbar {
-        width: 12px;
+        width: 8px;
       }
       
       ::-webkit-scrollbar-track {
@@ -25,128 +36,305 @@
       }
       
       ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
+        background: var(--primary-blue);
+        border-radius: 4px;
       }
       
       ::-webkit-scrollbar-thumb:hover {
-        background: #555;
+        background: #001A3D;
       }
       
       html {
         scrollbar-width: thin;
-        scrollbar-color: #888 #f1f1f1;
+        scrollbar-color: var(--primary-blue) #f1f1f1;
       }
-  </style>
+      
+      /* Navbar */
+      .navbar {
+        background-color: var(--primary-blue);
+        height: 70px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      .navbar-brand {
+        color: var(--accent-teal);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .navbar-brand img {
+        transition: transform 0.3s ease;
+      }
+      
+      .navbar-brand:hover img {
+        transform: scale(1.05);
+      }
+      
+      .nav-icons {
+        display: flex;
+        gap: 15px;
+      }
+      
+      .nav-icons img {
+        transition: transform 0.2s ease;
+      }
+      
+      .nav-icons img:hover {
+        transform: scale(1.1);
+      }
+      
+      /* Header section */
+      .header-section {
+        padding: 10px 15px;
+        background-color: var(--light-bg);
+        border-bottom: 1px solid #e1e1e1;
+      }
+      
+      .back-link {
+        color: var(--primary-blue);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+      }
+      
+      .back-link:hover {
+        color: var(--accent-teal);
+      }
+      
+      /* Domain display */
+      .domain-display {
+        padding: 10px;
+        background-color: white;
+        border-bottom: 1px solid #e1e1e1;
+      }
+      
+      #currentDomain {
+        color: var(--primary-blue);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+        word-break: break-all;
+      }
+      
+      /* Stats card */
+      .stats-card {
+        background-color: var(--primary-blue);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      
+      .stats-card h3 {
+        color: var(--highlight-cyan);
+        margin: 5px 0;
+        font-size: 1.2rem;
+      }
+      
+      #adCount {
+        color: var(--alert-red);
+        font-weight: 700;
+      }
+      
+      /* Feature cards */
+      .feature-card {
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        padding: 10px;
+        margin: 8px 15px;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      
+      .feature-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      .feature-icon {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+      }
+      
+      .feature-title {
+        font-weight: 600;
+        color: var(--primary-blue);
+        margin-top: 12px;
+      }
+      
+      /* Toggle switch */
+      .toggle {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+      }
+      
+      .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 24px;
+      }
+      
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+      }
+      
+      input:checked + .slider {
+        background-color: var(--accent-teal);
+      }
+      
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+      
+      /* Footer */
+      footer {
+        background-color: var(--primary-blue);
+        color: var(--highlight-cyan);
+        padding: 10px 0;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+      
+      footer a {
+        color: var(--highlight-cyan);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      
+      footer a:hover {
+        color: white;
+      }
+      
+      .version-text {
+        font-size: 0.8rem;
+      }
+    </style>
 </head>
 <body>
-    <div class="container-fluid p-0">
+    <div class="container-fluid p-0 h-100 d-flex flex-column">
         <!-- Navbar -->
-        <nav class="navbar sticky-top" style="background-color: #002D62; height: 70px;">
+        <nav class="navbar sticky-top">
             <div class="container-fluid">
-                <a href="#" class="navbar-brand" style="color: #5DCAD1;">
-                    <img src="../icons/apple-touch-icon.png" width="50" height="50" alt="">
-                    <b>Cyber Guard</b>
+                <a href="#" class="navbar-brand">
+                    <img src="../icons/apple-touch-icon.png" width="40" height="40" alt="Cyber Guard Logo">
+                    <span>Cyber Guard</span>
                 </a>
-                <div>
-                    <a href="./notification.html">
-                        <img src="../icons/bell.png" alt="" width="25" height="25" style="cursor: pointer;">
+                <div class="nav-icons">
+                    <a href="./notification.html" class="d-flex align-items-center">
+                        <img src="../icons/bell.png" alt="Notifications" width="22" height="22">
                     </a>
-                    <img src="../icons/settings (1).png" alt="" width="25" height="25" style="cursor: pointer;">
+                    <a href="#" class="d-flex align-items-center">
+                        <img src="../icons/settings (1).png" alt="Settings" width="22" height="22">
+                    </a>
                 </div>
             </div>
         </nav>
 
-        <!-- First Section -->
-        <div class="row">
-            <div class="col-12">
-                <div class="row">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="row align-items-center">
+                <div class="col-3">
+                    <img src="../icons/Cyber Guard (8).png" alt="AdBlocker Icon" width="70" height="70">
+                </div>
+                <div class="col-9 d-flex justify-content-between align-items-center">
+                    <h5 class="m-0">AdBlocker</h5>
+                    <a href="./Dashbord.html" class="back-link">
+                        <i class="fas fa-arrow-left me-1"></i> BACK
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Domain Display -->
+        <div class="domain-display">
+            <div class="text-center">
+                <p id="currentDomain">N/A</p>
+            </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="stats-card">
+            <h3>Block Ads</h3>
+            <h3><span id="adCount">0</span> in total</h3>
+        </div>
+
+        <!-- Feature Cards -->
+        <div class="flex-grow-1" style="overflow-y: auto; margin-bottom: 50px;">
+            <!-- Ad Blocker Card -->
+            <div class="feature-card">
+                <div class="row align-items-center">
                     <div class="col-2">
-                        <img src="../icons/Cyber Guard (8).png" alt="" width="150" height="125">
+                        <img src="../icons/block (1).png" alt="Ad Blocker" class="feature-icon">
                     </div>
-                    <div class="col-9 d-flex justify-content-between">
-                        <h5 class="m-3 mt-4">AdBlocker</h5>
-                        <a href="./Dashbord.html" class="mt-4"><b>BACK</b></a>
+                    <div class="col-7">
+                        <p class="feature-title m-0">Ad Blocker</p>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Second Section: URL Display -->
-        <div class="row" style="min-height: 20px;">
-            <div class="col-12 d-flex justify-content-center align-items-center p-2">
-                <div class="text-center">
-                    <h3 id="currentDomain">N/A</h3>
-                </div>
-            </div>
-        </div>
-
-        <!-- Third Section: Block Ads -->
-        <div class="row rounded-3 mt-3 m-3" style="background-color: #002C61; min-height: 40px;">
-            <div class="col-12 d-flex justify-content-center align-items-center p-2">
-                <div class="text-center">
-                    <h3 style="color: #00F5FF;">Block Ads</h3>
-                    <h3 style="color: #00F5FF;">
-                        <span id="adCount" style="color: #ED524E;">0</span> in total
-                    </h3>
-                </div>
-            </div>
-        </div>
-
-        <!-- Enable Block Ad Blocker -->
-        <div class="row p-2 m-1">
-            <div class="col-12 p-1" style="background-color: #D4EDDA; border-radius: 10px; height: 70px;">
-                <div class="row">
-                    <div class="col-3">
-                        <img src="../icons/block (1).png" alt="" width="60" height="60">
-                    </div>
-                    <div class="col-5">
-                        <p class="mt-3"><b>Ad Blocker</b></p>
-                    </div>
-                    <div class="col-4 p-2 d-flex align-items-start justify-content-start align-content-start">
-                      <div class="form-check form-switch d-flex align-items-start justify-content-start align-content-start">
-                        <div class="toggle">
+                    <div class="col-3 text-end">
+                        <label class="toggle">
                             <input type="checkbox" id="adblocker">
-                        </div>
-                        </div>
+                            <span class="slider"></span>
+                        </label>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Enable Pop-up Blocker -->
-        <div class="row p-2 m-1">
-            <div class="col-12 p-1" style="background-color: #D4EDDA; border-radius: 10px; height: 70px;">
-                <div class="row">
-                    <div class="col-3">
-                        <img src="../icons/pop-up-blocker.png" alt="" width="60" height="60">
+            <!-- Pop-up Blocker Card -->
+            <div class="feature-card">
+                <div class="row align-items-center">
+                    <div class="col-2">
+                        <img src="../icons/pop-up-blocker.png" alt="Pop-up Blocker" class="feature-icon">
                     </div>
-                    <div class="col-5">
-                        <p class="mt-3"><b>Pop-up Blocker</b></p>
+                    <div class="col-7">
+                        <p class="feature-title m-0">Pop-up Blocker</p>
                     </div>
-                    <div class="col-4 p-2 d-flex align-items-start justify-content-start align-content-start">
-                      <div class="form-check form-switch d-flex align-items-start justify-content-start align-content-start">
-                        <div class="toggle">
+                    <div class="col-3 text-end">
+                        <label class="toggle">
                             <input type="checkbox" id="popupBlocker">
-                        </div>
-                        </div>
+                            <span class="slider"></span>
+                        </label>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Footer -->
-        <footer class="mt-4">
-            <div class="container" style="background-color: #002D62; height: 40px; color: #00F5FF;">
-                <div class="row mt-2">
-                    <div class="col-4">
-                        <p style="text-align: end;"><b>Support</b></p>
+        <footer>
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-4 text-end">
+                        <a href="#"><b>Support</b></a>
                     </div>
-                    <div class="col-4">
-                        <p><a href="#" style="color: #00F5FF;"><b>Privacy Policy</b></a></p>
+                    <div class="col-4 text-center">
+                        <a href="#"><b>Privacy Policy</b></a>
                     </div>
-                    <div class="col-4">
-                        <p style="text-align: left;"><b>Version: 1.0</b></p>
+                    <div class="col-4 text-start">
+                        <span class="version-text"><b>Version: 1.0</b></span>
                     </div>
                 </div>
             </div>
@@ -154,5 +342,6 @@
     </div>
 
     <script src="/src/AdBlocker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

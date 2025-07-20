@@ -586,92 +586,188 @@ module.exports = {
     }
   },
 
-  sslCertificate: async (req, res, next) => {
+sslCertificate: async (req, res, next) => {
     try {
-      const { domain } = req.body;
-      const hostname = new URL(domain).hostname;
-
-      const getSSLCertificateInfo = (hostname) => {
-        return new Promise((resolve, reject) => {
-          const options = {
-            hostname: hostname,
-            port: 443,
-            method: "GET",
-            rejectUnauthorized: false,
-          };
-
-          const req = https.request(options, (response) => {
-            const certificate = response.socket.getPeerCertificate();
-
-            if (certificate && Object.keys(certificate).length !== 0) {
-              const validFrom = new Date(certificate.valid_from);
-              const validTo = new Date(certificate.valid_to);
-              const now = new Date();
-
-              const isExpired = now > validTo;
-              const isNotYetValid = now < validFrom;
-
-              resolve({
-                issuedTo: certificate.subject.CN || "Unknown",
-                issuedBy: certificate.issuer.CN || "Unknown",
-                validityPeriod: {
-                  validFrom: certificate.valid_from,
-                  validTo: certificate.valid_to,
-                },
-                isValid: !(isExpired || isNotYetValid),
-              });
-            } else {
-              reject({ error: "No SSL Certificate Found" });
-            }
-          });
-
-          req.on("error", (e) => {
-            let errorType = "Connection Error";
-            switch (e.code) {
-              case "ECONNREFUSED":
-                errorType = "Connection Refused";
-                break;
-              case "EHOSTUNREACH":
-                errorType = "Host Unreachable";
-                break;
-              case "CERT_HAS_EXPIRED":
-                errorType = "Certificate Expired";
-                break;
-              case "DEPTH_ZERO_SELF_SIGNED_CERT":
-                errorType = "Self-Signed Certificate";
-                break;
-              case "ERR_TLS_CERT_ALTNAME_INVALID":
-                errorType = "Hostname Mismatch";
-                break;
-              default:
-                break;
-            }
-            reject({
-              error: errorType,
-              details: e.message,
+        const { domain } = req.body;
+        
+        // Validate domain input
+        if (!domain) {
+            return res.status(400).json({
+                error: "Domain is required",
+                details: "Please provide a valid domain in the request body"
             });
-          });
+        }
 
-          req.end();
+        // Parse and validate the URL
+        let hostname;
+        try {
+            // Add https:// if not present to properly parse the URL
+            const urlToParse = domain.startsWith('http') ? domain : `https://${domain}`;
+            const parsedUrl = new URL(urlToParse);
+            hostname = parsedUrl.hostname;
+            
+            // Remove www. if present for cleaner display
+            hostname = hostname.replace(/^www\./, '');
+        } catch (e) {
+            return res.status(400).json({
+                error: "Invalid domain format",
+                details: "Please provide a valid domain name or URL"
+            });
+        }
+
+        const getSSLCertificateInfo = (hostname) => {
+            return new Promise((resolve, reject) => {
+                const options = {
+                    hostname: hostname,
+                    port: 443,
+                    method: "GET",
+                    rejectUnauthorized: false,
+                    // Set timeout to prevent hanging
+                    timeout: 5000,
+                    // Enable SNI (Server Name Indication)
+                    servername: hostname,
+                    // Only attempt once
+                    agent: false
+                };
+
+                const req = https.request(options, (response) => {
+                    const certificate = response.socket.getPeerCertificate(true); // true for detailed info
+                    
+                    // Check if we got a valid certificate
+                    if (!certificate || Object.keys(certificate).length === 0) {
+                        return reject({ 
+                            error: "No SSL Certificate Found", 
+                            details: "The server did not provide a certificate"
+                        });
+                    }
+
+                    // Parse dates
+                    const validFrom = new Date(certificate.valid_from);
+                    const validTo = new Date(certificate.valid_to);
+                    const now = new Date();
+
+                    // Calculate validity status
+                    const isExpired = now > validTo;
+                    const isNotYetValid = now < validFrom;
+                    const isValid = !(isExpired || isNotYetValid);
+                    
+                    // Calculate days remaining
+                    const daysRemaining = isValid ? 
+                        Math.ceil((validTo - now) / (1000 * 60 * 60 * 24)) : 
+                        0;
+
+                    // Format response data
+                    const responseData = {
+                        domain: hostname,
+                        issuedTo: certificate.subject.CN || hostname,
+                        issuedBy: certificate.issuer.CN || "Unknown Certificate Authority",
+                        validityPeriod: {
+                            validFrom: certificate.valid_from,
+                            validTo: certificate.valid_to,
+                            validFromFormatted: validFrom.toISOString(),
+                            validToFormatted: validTo.toISOString()
+                        },
+                        isValid,
+                        isExpired,
+                        isNotYetValid,
+                        daysRemaining,
+                        certificateDetails: {
+                            algorithm: certificate.subjectaltname ? 'SAN' : 'CN',
+                            signatureAlgorithm: certificate.signatureAlgorithm,
+                            serialNumber: certificate.serialNumber,
+                            fingerprint: certificate.fingerprint,
+                            bits: certificate.bits,
+                            version: certificate.version
+                        }
+                    };
+
+                    // Add SAN (Subject Alternative Names) if available
+                    if (certificate.subjectaltname) {
+                        responseData.subjectAlternativeNames = certificate.subjectaltname
+                            .split(', ')
+                            .map(san => san.replace(/^DNS:/, ''));
+                    }
+
+                    resolve(responseData);
+                });
+
+                req.on('timeout', () => {
+                    req.destroy();
+                    reject({
+                        error: "Connection Timeout",
+                        details: "The request timed out while trying to connect to the server"
+                    });
+                });
+
+                req.on('error', (e) => {
+                    let errorType = "Connection Error";
+                    let errorDetails = e.message;
+                    
+                    switch (e.code) {
+                        case "ECONNREFUSED":
+                            errorType = "Connection Refused";
+                            errorDetails = "The server refused the connection on port 443";
+                            break;
+                        case "EHOSTUNREACH":
+                            errorType = "Host Unreachable";
+                            errorDetails = "The host could not be reached";
+                            break;
+                        case "CERT_HAS_EXPIRED":
+                            errorType = "Certificate Expired";
+                            break;
+                        case "DEPTH_ZERO_SELF_SIGNED_CERT":
+                            errorType = "Self-Signed Certificate";
+                            errorDetails = "The certificate is self-signed and not trusted";
+                            break;
+                        case "ERR_TLS_CERT_ALTNAME_INVALID":
+                            errorType = "Hostname Mismatch";
+                            errorDetails = "The certificate is not valid for the requested hostname";
+                            break;
+                        case "ENOTFOUND":
+                            errorType = "Domain Not Found";
+                            errorDetails = "The domain name could not be resolved";
+                            break;
+                        case "ETIMEDOUT":
+                            errorType = "Connection Timeout";
+                            errorDetails = "The connection attempt timed out";
+                            break;
+                    }
+                    
+                    reject({
+                        error: errorType,
+                        details: errorDetails,
+                        code: e.code
+                    });
+                });
+
+                req.end();
+            });
+        };
+
+        // Fetch certificate information
+        const certificateInfo = await getSSLCertificateInfo(hostname);
+        
+        res.status(200).json({
+            status: "success",
+            message: "SSL Certificate Information",
+            data: certificateInfo,
+            timestamp: new Date().toISOString()
         });
-      };
-
-      // Fetch certificate information
-      const certificateInfo = await getSSLCertificateInfo(hostname);
-      res.status(200).send({
-        message: "SSL Certificate Information",
-        data: certificateInfo,
-      });
+        
     } catch (err) {
-      console.error("Error:", err);
-
-      res.status(500).send({
-        error: err.error || "Error fetching SSL certificate",
-        details: err.data || err.details || "",
-      });
+        console.error("SSL Certificate Error:", err);
+        
+        const statusCode = err.code === "ENOTFOUND" ? 404 : 500;
+        
+        res.status(statusCode).json({
+            status: "error",
+            error: err.error || "Error fetching SSL certificate",
+            details: err.details || err.message || "Unknown error occurred",
+            code: err.code,
+            timestamp: new Date().toISOString()
+        });
     }
-  },
-
+},
   scanDownloadedFiles: async (req, res, next) => {
     try {
       axios

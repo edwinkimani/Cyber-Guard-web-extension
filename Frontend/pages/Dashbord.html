@@ -2,275 +2,344 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashbord</title>
-  <link rel="stylesheet" href="../pages/css/Dashbord.css">
-  <script src="../src/bootstrap.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <title>Cyber Guard Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    html, body {
-      width: 400px;
-      height: 500px;
-      margin: 0;
-      overflow-y: scroll;
-      padding: 0px;
+    :root {
+      --primary-dark: #002D62;
+      --primary-light: #00F5FF;
+      --accent-teal: #5DCAD1;
+      --card-bg: #D4EDDA;
+      --popup-width: 400px;
+      --popup-height: 500px;
     }
+    
+    html, body {
+      width: var(--popup-width);
+      height: var(--popup-height);
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    /* Scrollbar styling */
+    .content-wrapper {
+      flex: 1;
+      overflow-y: auto;
+    }
+    
     ::-webkit-scrollbar {
-      width: 12px;
+      width: 8px;
     }
     
     ::-webkit-scrollbar-track {
-      background: transparent;
+      background: #f1f1f1;
     }
     
     ::-webkit-scrollbar-thumb {
-      background: #888;
-      border-radius: 10px;
+      background: var(--primary-dark);
+      border-radius: 4px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-      background: #555;
+      background: #001a3d;
     }
     
-    html {
-      scrollbar-width: thin;
-      scrollbar-color: #888 #f1f1f1;
+    /* Navbar styling */
+    .navbar {
+      background-color: var(--primary-dark) !important;
+      height: 70px;
+      padding: 0.5rem 1rem;
+      flex-shrink: 0;
+    }
+    
+    .navbar-brand {
+      color: var(--accent-teal) !important;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar-brand img {
+      margin-right: 10px;
+    }
+    
+    .nav-icons img {
+      margin-left: 15px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .nav-icons img:hover {
+      transform: scale(1.1);
+    }
+    
+    /* Dashboard cards */
+    .dashboard-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      height: 90px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .dashboard-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+    
+    .card-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+    
+    .card-status {
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    
+    .card-button {
+      background-color: var(--primary-dark);
+      color: var(--primary-light);
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    
+    .card-button:hover {
+      background-color: #001a3d;
+      color: white;
+    }
+    
+    /* Stats cards */
+    .stats-card {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      padding: 10px 0;
+      text-align: center;
+    }
+    
+    .stats-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 5px;
+    }
+    
+    .stats-value {
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+    
+    /* Footer */
+    .footer {
+      background-color: var(--primary-dark);
+      color: var(--primary-light);
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+    
+    .footer a {
+      color: var(--primary-light);
+      text-decoration: none;
+    }
+    
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Toast notification */
+    .toast-container {
+      z-index: 1100;
     }
   </style>
 </head>
-  <body class="p-0">
-    <div class="container-fluid p-0">
-      <nav style="background-color: #002D62;height: 70px;" class="navbar sticky-top">
-        <div class="container-fluid">
-          <a style="color: #5DCAD1;" class="navbar-brand" href="#">
-            <img src="../icons/apple-touch-icon.png" width="50" height="50" alt="">
-            <b>Cyber Guard </b>
-          </a>
-          <div>
-            <a href="./notification.html"><img style="cursor: pointer;" src="../icons/bell.png" alt="" width="25" height="25"></a>
-            <img style="cursor: pointer;" src="../icons/settings (1).png" alt="" width="20" height="20">
-          </div>
-        </div>
-      </nav>
-      <div class="container-fluid mt-4">
-
-        <!-- tost div start -->
-        <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-4">
-          <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-              <div class="toast-body p-1">
-                  <div class="container-fluid">
-                      <div class="row">
-                          <div class="col-10">
-                              <p class="mt-2">Hello, world! This is a toast message.</p>
-                          </div>
-                          <div class="col-2">
-                              <button type="button" class="btn-close mt-2" data-bs-dismiss="toast" aria-label="Close"></button>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="../icons/apple-touch-icon.png" width="40" height="40" alt="Cyber Guard">
+        <span>Cyber Guard</span>
+      </a>
+      <div class="nav-icons">
+        <a href="./notification.html"><img src="../icons/bell.png" alt="Notifications" width="22" height="22"></a>
+        <img src="../icons/settings (1).png" alt="Settings" width="20" height="20">
       </div>
-      
-        <!-- tost div end -->
-
-        <!-- first div -->
-          <div class="row p-2">
-            <div style="background-color: #D4EDDA;border-radius: 10px;" class="col-5">
-                <div class="row">
-                  <div class="col-12 d-flex justify-content-center align-content-center">
-                      <img class="mt-1" src="../icons/block.png" alt="" width="45" height="45">
-                  </div>
-                </div>
-                <div class="row"><h6 style="text-align: center;">Blocked sites</h6></div>
-                <div class="row">
-                  <span style="text-align: center;">
-                    <span id="blockedCounter">0</span>
-                  </span>
-                </div>
-            </div>
-
-            <div class="col-2">
-              <span style="color: white;">1</span>
-            </div>
-
-            <div style="background-color: #D4EDDA; border-radius: 10px;" class="col-5">
-              <div class="row">
-                <div class="col-12 d-flex justify-content-center align-content-center">
-                    <img class="mt-1" src="../icons/block (1).png" alt="" width="45" height="45">
-                </div>
-              </div>
-              <div class="row"><h6 style="text-align: center;">Blocked Ads</h6></div>
-              <div class="row"><span style="text-align: center;" id="adCount" >0</span></div>
-            </div>
-        </div>
-        <!-- end of first div -->
-
-        <!-- VPN div -->
-          <!-- <div  class="row p-2">
-            <div style="background-color: #D4EDDA;border-radius: 20px;height: 90px;" class="col-12 p-2">
-              <div class="row">
-                  <div class="col-3">
-                    <img class="mt-2" src="../icons/vpn.png" alt="" width="60" height="60">
-                  </div>
-                  <div class="col-5">
-                    <p class="mt-2"><b>VPN Status:</b></p>
-                    <h6 class="text-success"><b>ACTIVE</b></h6>
-                  </div>
-                  <div class="col-4">
-                   <a href="./vpn.html"> <button id="navigateToVpn" style="background-color: #002C61;color: #00F5FF;" type="button" class="btn mt-3"><b>Connect</b></button></a>
-                  </div>
-              </div>
-            </div>
-          </div> -->
-        <!-- end of VPN div -->
-
-        <!-- SSL Certificate div -->
-          <div  class="row p-2">
-            <div style="background-color: #D4EDDA;border-radius: 20px;height: 90px;" class="col-12 p-2">
-              <div class="row">
-                <div class="col-3">
-                  <img class="mt-2" src="../icons/ssl.png" alt="" width="60" height="60">
-                </div>
-                <div class="col-4">
-                  <p class="mt-2"><b>SSL Status :</b></p>
-                  <h6 class="text-success"><b>SECURE</b></h6>
-                </div>
-                <div class="col-5">
-                   <a href="./ssl.html"><button id="clearTimeoutButton" style="background-color: #002C61;color: #00F5FF;font-size: medium;" type="button" class="btn mt-3 col-12"><b>View Details</b></button></a>
-                </div>
-            </div>
-            </div>
-          </div>
-        <!-- end of SSL Certificate div -->
-
-        <!-- PASSWORD TESTING div -->
-          <div  class="row p-2">
-            <div style="background-color: #D4EDDA;border-radius: 20px;height: 90px;" class="col-12 p-2">
-              <div class="row">
-                  <div class="col-3">
-                    <img class="mt-2" src="../icons/cyber-security (1).png" alt="" width="60" height="60">
-                  </div>
-                  <div class="col-5">
-                    <p class="mt-2"><b>PASSWORD TESTING</b></p>
-                  </div>
-                  <div class="col-4">
-                    <a href="./passwordTesting.html"><button id="clearTimeoutButton" style="background-color: #002C61;color: #00F5FF;" type="button" class="btn mt-3 col-12"><b>Test</b></button></a>
-                  </div>
-              </div>
-            </div>
-          </div>
-        <!-- end of PASSWORD TESTING div -->
-
-        <!-- Adblocker div -->
-          <div  class="row p-2">
-            <div style="background-color: #D4EDDA;border-radius: 20px;height: 90px;" class="col-12 p-2">
-              <div class="row">
-                  <div class="col-3">
-                    <img class="mt-2" src="../icons/block (1).png" alt="" width="60" height="60">
-                  </div>
-                  <div class="col-5">
-                    <p class="mt-2"><b>Adblocker:</b></p>
-                    <h6 class="mt-2"><b>Ads Blocked:<s class="text-danger" id="adCount">0</s></b></h6>
-                  </div>
-                  <div class="col-4">
-                    <a href="./AdBlocker.html"><button id="clearTimeoutButton" style="background-color: #002C61;color: #00F5FF;" type="button" class="btn mt-3"><b>Enable</b></button></a>
-                  </div>
-              </div>
-            </div>
-          </div>
-        <!-- end of Adblocker div -->
-
-        <!-- SECURE div -->
-          <div  class="row p-2">
-            <div style="background-color: #D4EDDA;border-radius: 20px;height: 90px;" class="col-12 p-2">
-              <div class="row">
-                  <div class="col-3">
-                    <img class="mt-2" src="../icons/cybercrime.png" alt="" width="60" height="60">
-                  </div>
-                  <div class="col-4">
-                    <p class="mt-2"><b>PHASING</b></p>
-                    <h6 class="mt-2 text-success"><b>SECURE</b></h6>
-                  </div>
-                  <div class="col-5">
-                    <a href="./phising.html"><button id="clearTimeoutButton" style="background-color: #002C61;color: #00F5FF;" type="button" class="btn mt-3"><b>View Details</b></button></a>
-                  </div>
-              </div>
-            </div>
-          </div>
-        <!-- end of SECURE div -->
-
-        <!-- ENABLE PROXIES div -->
-          <div  class="row p-2">
-            <div style="background-color: #D4EDDA;border-radius: 20px;height: 90px;" class="col-12 p-2">
-              <div class="row">
-                  <div class="col-3">
-                    <img class="mt-2" src="../icons/proxy (1).png" alt="" width="60" height="60">
-                  </div>
-                  <div class="col-5">
-                    <p class="mt-2"><b>ENABLE PROXIES</b></p>
-                    <h6 class="mt-2 text-success"><b>ACTIVE</b></h6>
-                  </div>
-                  <div class="col-4">
-                    <a href="./Proxies.html"><button id="clearTimeoutButton" style="background-color: #002C61;color: #00F5FF;" type="button" class="btn mt-3"><b>Connect</b></button></a>
-                  </div>
-              </div>
-            </div>
-          </div>
-        <!-- end of ENABLE PROXIES div -->
-
-        <!-- ENABLE PARENT CONTROL div -->
-          <div  class="row p-2">
-            <div style="background-color: #D4EDDA;border-radius: 20px;height: 90px;" class="col-12 p-2">
-              <div class="row">
-                  <div class="col-3">
-                    <img class="mt-2" src="../icons/parental-control.png" alt="" width="60" height="60">
-                  </div>
-                  <div class="col-5">
-                    <p class="mt-2"><b>PARENT CONTROL</b></p>
-                  </div>
-                  <div class="col-4">
-                    <a href="../pages/login.html"><button id="clearTimeoutButton" style="background-color: #002C61;color: #00F5FF;" type="button" class="btn mt-3"><b>Configure</b></button></a>
-                  </div>
-              </div>
-            </div>
-          </div>
-        <!-- end of ENABLE PARENT CONTROL div -->
-
-        <!-- ENABLE virus scan div -->
-          <div  class="row p-2">
-            <div style="background-color: #D4EDDA;border-radius: 20px;height: 90px;" class="col-12 p-2">
-              <div class="row">
-                  <div class="col-3">
-                    <img class="mt-2" src="../icons/scanning.png" alt="" width="60" height="60">
-                  </div>
-                  <div class="col-5">
-                    <p class="mt-2"><b> VIRUS SCANNING</b></p>
-                  </div>
-                  <div class="col-4">
-                    <a href="./virus.html"><button id="clearTimeoutButton" style="background-color: #002C61;color: #00F5FF;" type="button" class="btn mt-3 col-12"><b>Test</b></button></a>
-                  </div>
-              </div>
-            </div>
-          </div>
-        <!-- end of ENABLE virus scan div -->
-      
     </div>
-    <footer class="mt-4">
-        <div style="background-color: #002D62;height: 40px;color: #00F5FF;" class="container">
-            <div class="row">
-                <div class="col-4">
-                    <p style="text-align: end;"><b>Supports</b></p>
-                </div>
-                <div class="col-4">
-                    <p><a href="#"><b>Privacy Policy</b></a></p>
-                </div>
-                <div class="col-4">
-                    <p style="text-align: left;"><b>Version: 1.0</b></p>
-                </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="content-wrapper">
+    <div class="container-fluid p-3">
+      <!-- Toast Notification -->
+      <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-2">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-body p-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="mb-0">Hello, world! This is a toast message.</p>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
+          </div>
         </div>
-    </footer>
-    <script src="../src/Dashbord.js"></script>
-  </body>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="row mb-3">
+        <div class="col-5 stats-card">
+          <img src="../icons/block.png" class="stats-icon" alt="Blocked Sites">
+          <h6 class="card-title">Blocked Sites</h6>
+          <div class="stats-value" id="blockedCounter">0</div>
+        </div>
+        <div class="col-2"></div>
+        <div class="col-5 stats-card">
+          <img src="../icons/block (1).png" class="stats-icon" alt="Blocked Ads">
+          <h6 class="card-title">Blocked Ads</h6>
+          <div class="stats-value" id="adCount">0</div>
+        </div>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="dashboard-card">
+        <div class="row align-items-center h-100">
+          <div class="col-3 text-center">
+            <img src="../icons/ssl.png" class="card-icon" alt="SSL">
+          </div>
+          <div class="col-5">
+            <p class="card-title mb-1">SSL Status</p>
+            <span class="card-status text-success">SECURE</span>
+          </div>
+          <div class="col-4">
+            <a href="./ssl.html" class="btn card-button">View</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="row align-items-center h-100">
+          <div class="col-3 text-center">
+            <img src="../icons/cyber-security (1).png" class="card-icon" alt="Password">
+          </div>
+          <div class="col-5">
+            <p class="card-title mb-1">Password Test</p>
+          </div>
+          <div class="col-4">
+            <a href="./passwordTesting.html" class="btn card-button">Test</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="row align-items-center h-100">
+          <div class="col-3 text-center">
+            <img src="../icons/block (1).png" class="card-icon" alt="AdBlocker">
+          </div>
+          <div class="col-5">
+            <p class="card-title mb-1">AdBlocker</p>
+            <span class="card-status">Ads Blocked: <span id="adCount2" class="text-danger">0</span></span>
+          </div>
+          <div class="col-4">
+            <a href="./AdBlocker.html" class="btn card-button">Enable</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="row align-items-center h-100">
+          <div class="col-3 text-center">
+            <img src="../icons/cybercrime.png" class="card-icon" alt="Phishing">
+          </div>
+          <div class="col-5">
+            <p class="card-title mb-1">Phishing</p>
+            <span class="card-status text-success">SECURE</span>
+          </div>
+          <div class="col-4">
+            <a href="./phising.html" class="btn card-button">View</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="row align-items-center h-100">
+          <div class="col-3 text-center">
+            <img src="../icons/proxy (1).png" class="card-icon" alt="Proxy">
+          </div>
+          <div class="col-5">
+            <p class="card-title mb-1">Proxy</p>
+            <span class="card-status text-success">ACTIVE</span>
+          </div>
+          <div class="col-4">
+            <a href="./Proxies.html" class="btn card-button">Connect</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="row align-items-center h-100">
+          <div class="col-3 text-center">
+            <img src="../icons/parental-control.png" class="card-icon" alt="Parental">
+          </div>
+          <div class="col-5">
+            <p class="card-title mb-1">Parental Control</p>
+          </div>
+          <div class="col-4">
+            <a href="../pages/login.html" class="btn card-button">Configure</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="row align-items-center h-100">
+          <div class="col-3 text-center">
+            <img src="../icons/scanning.png" class="card-icon" alt="Virus">
+          </div>
+          <div class="col-5">
+            <p class="card-title mb-1">Virus Scan</p>
+          </div>
+          <div class="col-4">
+            <a href="./virus.html" class="btn card-button">Scan</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer - now stays at the bottom -->
+  <footer class="footer">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-4 text-end">
+          <span><b>Support</b></span>
+        </div>
+        <div class="col-4 text-center">
+          <a href="#"><b>Privacy</b></a>
+        </div>
+        <div class="col-4 text-start">
+          <span><b>v1.0</b></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../src/Dashbord.js"></script>
+  <script src="../src/bootstrap.min.js"></script>
+</body>
 </html>
- 
